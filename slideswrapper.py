@@ -58,14 +58,18 @@ class SlidesWrapper():
 
   def create_presentation(self, title):
     """
-    Creates a new, blank presentation with given title and returns presentation ID
+    Creates a new, blank presentation with given title and returns presentation object
     """
     presentation = {
       'title': title 
     }
     presentation = self.service.presentations().create(body=presentation).execute()
     print('Created presentation with ID: {0}'.format(presentation.get('presentationId')))
-    return presentation.get('presentation_Id')
+    return presentation
+
+  def add_slides(self, presentation, content):
+    #implement me
+    print("not yet implemented")
 
 if __name__ == '__main__':
   s = SlidesWrapper()

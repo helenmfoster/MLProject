@@ -14,7 +14,7 @@ class Wikipage:
 
   def get_section(self, index):
     """ Returns the corresponding section with utf-8 encoding"""
-    return self.sections[index].encode("utf-8") 
+    return self.sections[index].encode("utf-8")
 
   def get_header(self, index):
     """ Formats the corresponding section as wikipedia plaintext does"""
@@ -48,6 +48,10 @@ class Wikipage:
 
     self.write_paragraph(section_number, current_content)
     return self.paragraphs
+
+  def summarize_content(self):
+    self.split_paragraphs()
+    #to do -> each paragraph gets summarized here
 
 #w = Wikipage("Albert Einstein")
 #print w.split_paragraphs()
