@@ -67,9 +67,39 @@ class SlidesWrapper():
     print('Created presentation with ID: {0}'.format(presentation.get('presentationId')))
     return presentation
 
+  def create_slide(self, index, title):
+    return{
+      'createSlide': {
+        'insertionIndex': str(index),
+        'slideLayoutReference': {
+          'predefinedLayout': 'TITLE_AND_BODY'
+        }
+     }
+    }
+
+  def add_title(self, title):
+    return{
+    'insertText': {
+      'objectId': element_id,
+      'insertionIndex': 0,
+      'text': title
+      }
+    }
+
   def add_slides(self, presentation, content):
-    #implement me
-    print("not yet implemented")
+    requests = []
+    for k in content:
+      requests.append(self.create_slide(0, str(k)))
+    #requests.append(self.add_title(str(k)))
+
+    # Execute the request.
+    body = {
+        'requests': requests
+    }
+    response = self.service.presentations().batchUpdate(presentationId=presentation.get("presentationId"),
+                                                          body=body).execute()
+    create_slide_response = response.get('replies')[0].get('createSlide')
+    print('Created slide with ID: {0}'.format(create_slide_response.get('objectId')))
 
 if __name__ == '__main__':
   s = SlidesWrapper()
