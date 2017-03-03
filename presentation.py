@@ -1,20 +1,23 @@
 import os
 from slideswrapper import SlidesWrapper
+from simplesummarizer import SimpleSummarizer
 from wikipage import Wikipage
 
 class Presentation():
-  def __init__(self, subject):
+  def __init__(self, subject, summarizer):
     self.g_slides = SlidesWrapper()
     self.w_page = Wikipage(subject)
+    self.summarizer = summarizer
     self.g_slides_presentation = self.g_slides.create_presentation(subject)
     
   def build_presentation(self):
-    self.content = "go cats"
-    #self.content = self.w_page.split_paragraphs()
-    self.g_slides.add_slides(self.g_slides_presentation, self.content)
+    content = self.w_page.split_paragraphs()
+    brief_content = self.summarizer.summarize(content)
+    self.g_slides.add_slides(self.g_slides_presentation, brief_content)
 
 if __name__ == '__main__':
   subject = "Albert Einstein"
-  p = Presentation(subject)
+  s = SimpleSummarizer()
+  p = Presentation(subject, s)
   p.build_presentation()
 
