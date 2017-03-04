@@ -1,3 +1,4 @@
+import re
 import wikipedia
 
 class Wikipage:
@@ -6,7 +7,6 @@ class Wikipage:
     """
       subject (string) : subject of desired wikipedia article
     """
-
     self.subject = subject
     self.page = wikipedia.page(self.subject)
     self.sections = self.page.sections
@@ -14,7 +14,7 @@ class Wikipage:
 
   def get_section(self, index):
     """ Returns the corresponding section with utf-8 encoding"""
-    return self.sections[index].encode("utf-8")
+    return re.sub('<[^<]+?>', '', self.sections[index].encode("utf-8"))
 
   def get_header(self, index):
     """ Formats the corresponding section as wikipedia plaintext does"""
