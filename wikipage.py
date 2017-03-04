@@ -37,9 +37,12 @@ class Wikipage:
       Removes sections that are empty
     """
     clean_paragraphs = []
+    counter = 0
     for paragraph in self.paragraphs:
       content = paragraph.content
       if len(content) > 1:
+        paragraph.index = counter
+        counter += 1
         clean_paragraphs.append(paragraph)
       self.paragraphs = clean_paragraphs
 
