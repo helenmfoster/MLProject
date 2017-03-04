@@ -1,4 +1,4 @@
-from wikipage import Paragraph
+from paragraph import Paragraph
 
 class SimpleSummarizer():
   """"
@@ -33,7 +33,8 @@ class SimpleSummarizer():
         first_sentances.append(current_sentance) 
     return first_sentances
 
+#from wikipage import Wikipage
 #w = Wikipage("Albert Einstein")
 #s = SimpleSummarizer()
 #content = w.split_paragraphs()
-#print summarized_content = s.summarize(w.paragraphs)
+#print s.summarize(w.paragraphs)
