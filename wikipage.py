@@ -1,6 +1,15 @@
 import re
 import wikipedia
 
+class Paragraph:
+    def __init__(self, index, title, content):
+      self.index = index
+      self.title = title
+      self.content = content
+
+    def __str__(self):
+      return "Title: " + self.title + "\nIndex: " + str(self.index) + "\nContent: " + str(self.content)
+
 class Wikipage:
   """Representation of wikipedia article"""
   def __init__(self, subject):
@@ -10,7 +19,7 @@ class Wikipage:
     self.subject = subject
     self.page = wikipedia.page(self.subject)
     self.sections = self.page.sections
-    self.paragraphs = {}
+    self.paragraphs = []
 
   def get_section(self, index):
     """ Returns the corresponding section with utf-8 encoding"""
@@ -24,23 +33,23 @@ class Wikipage:
   def write_paragraph(self, section_number, content):
     """ Writes paragraph to paragraph diction with section as key, content as value"""
     if section_number == 0:
-      section = "Summary"
+      title = "Summary"
     else:
-      section = self.get_section(section_number - 1)
-    self.paragraphs[section] = content
+      title = self.get_section(section_number - 1)
+
+    paragraph = Paragraph(section_number, title, content)
+    self.paragraphs.append(paragraph)
 
   def clean_paragraphs(self):
     """
       Removes sections that are empty
     """
-    empty_sections = []
-    for section in self.paragraphs:
-      content = self.paragraphs[section]
-      if len(content) <= 1:
-        empty_sections.append(section)
-
-    for section in empty_sections:
-      self.paragraphs.pop(section)
+    clean_paragraphs = []
+    for paragraph in self.paragraphs:
+      content = paragraph.content
+      if len(content) > 1:
+        clean_paragraphs.append(paragraph)
+      self.paragraphs = clean_paragraphs
 
   def split_paragraphs(self):
     """Splits up a wikipedia article into sections and writes to dictionary"""
