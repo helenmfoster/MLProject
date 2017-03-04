@@ -15,7 +15,7 @@ class SimpleSummarizer():
     first_sentances = []
     terminating_characters = ".?!"
 
-    for line in value.split("\n"):
+    for line in value:
       print line
       current_sentance = ""
       for char in line:
