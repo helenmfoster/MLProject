@@ -6,6 +6,7 @@ from apiclient import discovery
 from oauth2client import client
 from oauth2client import tools
 from oauth2client.file import Storage
+from paragraph import Paragraph
 
 try:
     import argparse
@@ -68,31 +69,57 @@ class SlidesWrapper():
     return presentation
 
   def create_slide(self, index, title):
-    return{
-      'createSlide': {
-        'insertionIndex': str(index),
-        'slideLayoutReference': {
-          'predefinedLayout': 'TITLE_AND_BODY'
-        }
-     }
-    }
+    pageId = str(index)*5
+    titleId = "a-"+pageId
+    bodyId = "b-"+pageId
 
-  def add_title(self, title):
-    return{
-    'insertText': {
-      'objectId': element_id,
-      'insertionIndex': 0,
-      'text': title
+    requests = [
+      {
+        "createSlide": {
+          "objectId": pageId,
+          "slideLayoutReference": {
+            "predefinedLayout": "TITLE_AND_BODY"
+          },
+          "placeholderIdMappings": [
+            {
+              "layoutPlaceholder": {
+                "type": "TITLE",
+                "index": 0
+              },
+              "objectId": titleId,
+             },
+            {
+              "layoutPlaceholder": {
+                "type": "BODY",
+                "index": 0
+              },
+              "objectId": bodyId,
+             },
+          ],
+        }
+      },
+      {
+        "insertText": {
+          "objectId": bodyId,
+          "text": "CATS CATS CATS",
+        }
+      },
+{
+        "insertText": {
+          "objectId": titleId,
+          "text": title,
+        }
       }
-    }
+    ]
+    return requests
 
   def add_slides(self, presentation, content):
     requests = []
-    for k in content:
-      requests.append(self.create_slide(0, str(k)))
-    #requests.append(self.add_title(str(k)))
+    for paragraph in content:
+      new_slide_request = self.create_slide(paragraph.index, paragraph.title)
+      for element in new_slide_request:
+        requests.append(element)
 
-    # Execute the request.
     body = {
         'requests': requests
     }
