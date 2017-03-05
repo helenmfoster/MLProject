@@ -21,6 +21,7 @@ class SlidesWrapper():
     self.credentials = self.get_credentials()
     self.http = self.credentials.authorize(httplib2.Http())
     self.service = discovery.build('slides', 'v1', http=self.http)
+    self.requests = []
 
   def get_credentials(self):
     """Gets valid user credentials from storage.
@@ -68,65 +69,94 @@ class SlidesWrapper():
     print('Created presentation with ID: {0}'.format(presentation.get('presentationId')))
     return presentation
 
-  def create_slide(self, index, title):
-    pageId = str(index)*5
+  def insert_text(self, objectId, text):
+    """
+      Builds insert text request
+
+      arg0 objectId to insert text into
+      arg1 text to insert
+
+    """
+    return {
+      "insertText": {
+        "objectId": objectId,
+        "text": text,
+      }
+    }
+
+
+  def create_slide(self, pageId, titleId, bodyId):
+    """
+      Builds create slide request
+
+    """
+    return {
+      "createSlide": {
+        "objectId": pageId,
+        "slideLayoutReference": {
+          "predefinedLayout": "TITLE_AND_BODY"
+        },
+        "placeholderIdMappings": [
+          {
+            "layoutPlaceholder": {
+              "type": "TITLE",
+              "index": 0
+            },
+            "objectId": titleId,
+           },
+          {
+            "layoutPlaceholder": {
+              "type": "BODY",
+              "index": 0
+            },
+            "objectId": bodyId,
+           }
+        ]
+      }
+    }
+
+  def build_slide(self, paragraph):
+    """
+      Adds API requests to requests array based on input paragraph
+
+    """
+
+    pageId = str(paragraph.index)*5
     titleId = "a-"+pageId
     bodyId = "b-"+pageId
 
-    requests = [
-      {
-        "createSlide": {
-          "objectId": pageId,
-          "slideLayoutReference": {
-            "predefinedLayout": "TITLE_AND_BODY"
-          },
-          "placeholderIdMappings": [
-            {
-              "layoutPlaceholder": {
-                "type": "TITLE",
-                "index": 0
-              },
-              "objectId": titleId,
-             },
-            {
-              "layoutPlaceholder": {
-                "type": "BODY",
-                "index": 0
-              },
-              "objectId": bodyId,
-             },
-          ],
-        }
-      },
-      {
-        "insertText": {
-          "objectId": bodyId,
-          "text": "CATS CATS CATS",
-        }
-      },
-{
-        "insertText": {
-          "objectId": titleId,
-          "text": title,
-        }
-      }
-    ]
-    return requests
+    self.requests.append(self.create_slide(pageId, titleId, bodyId))
+    self.requests.append(self.insert_text(titleId, paragraph.title))
+    self.requests.append(self.insert_text(bodyId, "body text here"))
 
-  def add_slides(self, presentation, content):
-    requests = []
-    for paragraph in content:
-      new_slide_request = self.create_slide(paragraph.index, paragraph.title)
-      for element in new_slide_request:
-        requests.append(element)
+  def submit_response(self, presentation):
+    """
+      Submits all requests in requests array and clears array
 
+      arg0 presentation: presentation to submit requests for
+
+    """
     body = {
-        'requests': requests
+        'requests': self.requests
     }
     response = self.service.presentations().batchUpdate(presentationId=presentation.get("presentationId"),
                                                           body=body).execute()
     create_slide_response = response.get('replies')[0].get('createSlide')
     print('Created slide with ID: {0}'.format(create_slide_response.get('objectId')))
+    self.requests = []
+    return create_slide_response
+
+  def add_slides(self, presentation, content):
+    """
+      Builds requests to create slides for presentation based on content and submits requests
+
+      arg0 presentation to alter
+      arg1 content to add
+
+    """
+    for paragraph in content:
+      new_slide_request = self.build_slide(paragraph)
+    self.submit_response(presentation)
 
 if __name__ == '__main__':
   s = SlidesWrapper()
