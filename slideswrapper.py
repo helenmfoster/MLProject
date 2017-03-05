@@ -84,7 +84,6 @@ class SlidesWrapper():
       }
     }
 
-
   def create_slide(self, pageId, titleId, bodyId):
     """
       Builds create slide request
@@ -127,7 +126,16 @@ class SlidesWrapper():
 
     self.requests.append(self.create_slide(pageId, titleId, bodyId))
     self.requests.append(self.insert_text(titleId, paragraph.title))
-    self.requests.append(self.insert_text(bodyId, "body text here"))
+    self.requests.append(self.insert_text(bodyId, "\n".join(paragraph.content)))
+    self.requests.append({
+    'createParagraphBullets': {
+        'objectId': bodyId,
+        'textRange': {
+            'type': 'ALL'
+        },
+        'bulletPreset': 'BULLET_ARROW_DIAMOND_DISC'
+      }
+    })
 
   def submit_response(self, presentation):
     """
