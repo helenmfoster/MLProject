@@ -60,7 +60,7 @@ class SlidesWrapper():
 
   def create_presentation(self, title):
     """
-    Creates a new, blank presentation with given title and returns presentation object
+      Creates a new, blank presentation with given title and returns presentation object
     """
     presentation = {
       'title': title 
@@ -114,6 +114,23 @@ class SlidesWrapper():
       }
     }
 
+  def format_body(self, bodyId):
+    """
+      Adds bullet points to body of text
+
+      arg0 bodyId : id of body of text to format
+
+    """
+    return {
+    'createParagraphBullets': {
+        'objectId': bodyId,
+        'textRange': {
+            'type': 'ALL'
+        },
+        'bulletPreset': 'BULLET_ARROW_DIAMOND_DISC'
+      }
+    }
+
   def build_slide(self, paragraph):
     """
       Adds API requests to requests array based on input paragraph
@@ -127,15 +144,7 @@ class SlidesWrapper():
     self.requests.append(self.create_slide(pageId, titleId, bodyId))
     self.requests.append(self.insert_text(titleId, paragraph.title))
     self.requests.append(self.insert_text(bodyId, "\n".join(paragraph.content)))
-    self.requests.append({
-    'createParagraphBullets': {
-        'objectId': bodyId,
-        'textRange': {
-            'type': 'ALL'
-        },
-        'bulletPreset': 'BULLET_ARROW_DIAMOND_DISC'
-      }
-    })
+    self.requests.append(self.format_body(bodyId))
 
   def submit_response(self, presentation):
     """
@@ -150,7 +159,6 @@ class SlidesWrapper():
     response = self.service.presentations().batchUpdate(presentationId=presentation.get("presentationId"),
                                                           body=body).execute()
     create_slide_response = response.get('replies')[0].get('createSlide')
-    print('Created slide with ID: {0}'.format(create_slide_response.get('objectId')))
     self.requests = []
     return create_slide_response
 
