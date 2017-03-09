@@ -23,7 +23,7 @@ class Presentation():
 
 if __name__ == '__main__':
   subject = "Albert Einstein"
-  s = SmartSummarizer("textsum_epoch13_633.76.t7")
+  s = SmartSummarizer("textsum_epoch2_31.37.t7")
   p = Presentation(subject, s)
   p.build_presentation()
 
