@@ -13,29 +13,28 @@ class SmartSummarizer():
 
   def get_file(self, filename):
     try:
-      f = open(filename, 'w')
+      f = open(filename, 'wr')
       return f
     except:
       return None
   
   def summarize_paragraph(self, paragraph):
+    home = "/home/helenmfoster/opennmt"	
     source_paragraph = " ".join(self.get_first_sentance(paragraph.content)) 
-    output_file = "output-" + str(paragraph.index) + ".txt"
-    input_file = "/home/helenmfoster/opennmt/input-" + str(paragraph.index) + ".txt"
+    output_file = home + "/output/output-" + str(paragraph.index) + ".txt"
+    input_file = home + "/input/input-" + str(paragraph.index) + ".txt"
     i = open(input_file, 'w')
     print source_paragraph
     i.write(source_paragraph + " .\n")
     i.close()
-		
-    command = "th translate.lua -model " + self.model + " -src "+ input_file +" -output " + output_file
-    p = subprocess.Popen(["th translate.lua", "-model " + self.model, "-src " + input_file, "-output " + output_file], cwd="/home/helenmfoster/opennmt/")
-    p.wait()
-    print "executed command to translate the jawn"
 
-    f = self.get_file(output_file)
-	
-    summarized_content = f.read()
-    print summarized_content
+    p = subprocess.Popen(["/home/Adel/torch/install/bin/th", home + "/translate.lua", "-model", home + "/" + self.model, "-src",  input_file, "-output", output_file], cwd=home)
+    p.wait()
+    
+    with open(output_file) as f:
+        summarized_content = f.read()
+    # print "SUMMARY: {0}".format(summarized_content)
+    return summarized_content
     
   def summarize(self, content):
     summarized_content_array = []
