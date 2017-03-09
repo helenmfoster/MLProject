@@ -1,7 +1,13 @@
+#!/usr/bin/python
 import os
+import sys
 from slideswrapper import SlidesWrapper
 from simplesummarizer import SimpleSummarizer
+from smartsummarizer import SmartSummarizer
 from wikipage import Wikipage
+
+__author__ = "Helen and Adel"
+
 
 class Presentation():
   def __init__(self, subject, summarizer):
@@ -17,7 +23,7 @@ class Presentation():
 
 if __name__ == '__main__':
   subject = "Albert Einstein"
-  s = SimpleSummarizer()
+  s = SmartSummarizer("textsum_epoch13_633.76.t7")
   p = Presentation(subject, s)
   p.build_presentation()
 

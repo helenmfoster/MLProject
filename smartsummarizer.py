@@ -20,7 +20,7 @@ class SmartSummarizer():
   
   def summarize_paragraph(self, paragraph):
     home = "/home/helenmfoster/opennmt"	
-    source_paragraph = " ".join(self.get_first_sentance(paragraph.content)) 
+    source_paragraph = " .\n".join(self.get_first_sentance(paragraph.content)) 
     output_file = home + "/output/output-" + str(paragraph.index) + ".txt"
     input_file = home + "/input/input-" + str(paragraph.index) + ".txt"
     i = open(input_file, 'w')
@@ -34,12 +34,16 @@ class SmartSummarizer():
     with open(output_file) as f:
         summarized_content = f.read()
     # print "SUMMARY: {0}".format(summarized_content)
-    return summarized_content
+    return summarized_content.split("\n")
     
   def summarize(self, content):
     summarized_content_array = []
     for paragraph in content:
-      summarized_content_array.append(self.summarize_paragraph(paragraph))
+      index = paragraph.index
+      title = paragraph.title
+      content = self.summarize_paragraph(paragraph)
+      p = Paragraph(index, title, content)
+      summarized_content_array.append(p)
     return summarized_content_array
 
   def get_first_sentance(self, value):
@@ -57,11 +61,11 @@ class SmartSummarizer():
         first_sentances.append(current_sentance) 
     return first_sentances
 
-from wikipage import Wikipage
-print "waiting on wikipedia...."
-w = Wikipage("Albert Einstein")
-print "waiting on wikipedia..."
-s = SmartSummarizer("textsum_epoch13_633.76.t7")
-content = w.split_paragraphs()
-print "okay jumping into the good stuff"
-print s.summarize(w.paragraphs)
+#from wikipage import Wikipage
+#print "waiting on wikipedia...."
+#w = Wikipage("Albert Einstein")
+#print "waiting on wikipedia..."
+#s = SmartSummarizer("textsum_epoch13_633.76.t7")
+#content = w.split_paragraphs()
+#print "okay jumping into the good stuff"
+#s.summarize(w.paragraphs)
