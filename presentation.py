@@ -22,8 +22,9 @@ class Presentation():
     self.g_slides.add_slides(self.g_slides_presentation, brief_content)
 
 if __name__ == '__main__':
-  subject = "Albert Einstein"
+  subject = "Barack Obama"
   s = SmartSummarizer("textsum_epoch8_54.87.t7")
+  #s = SimpleSummarizer()
   p = Presentation(subject, s)
   p.build_presentation()
 
