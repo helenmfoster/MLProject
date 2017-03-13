@@ -28,7 +28,7 @@ class SmartSummarizer():
     i.write(source_paragraph + " .\n")
     i.close()
 
-    p = subprocess.Popen(["/home/Adel/torch/install/bin/th", home + "/translate.lua", "-model", home + "/" + self.model, "-src",  input_file, "-output", output_file, "-gpuid 1"], cwd=home)
+    p = subprocess.Popen(["/home/Adel/torch/install/bin/th", home + "/translate.lua", "-model", home + "/" + self.model, "-src",  input_file, "-output", output_file, "-gpuid", "1", "-replace_unk"], cwd=home)
     p.wait()
     
     with open(output_file) as f:
