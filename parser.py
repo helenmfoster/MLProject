@@ -48,23 +48,3 @@ def parse_doc(doc):
 
 if __name__ == "__main__":
     build_dataset("input_data")
-
-    #input_path = sys.argv[1] if len(sys.argv) >= 2 else "./input"
-    #output_path = sys.argv[2] if len(sys.argv) >= 3 else "./output"
-    
-    #if not exists(input_path):
-    #    sys.exit(0)
-
-    #if not exists(output_path):
-    #    mkdir() # needs to be imported
-
-    #if isdir(input_path):
-    #    files = get_dir_files(input_path)
-
-    #    for f in files:
-    #        output = parse_gigaword_file(f)
-    #        save_output(output, output_path)
-    #else:
-        #isfile
-    #    output = parse_gigaword_file(input_path)
-    #    save_output(output, output_path)
